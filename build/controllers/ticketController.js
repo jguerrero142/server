@@ -30,6 +30,18 @@ class TicketController {
             res.status(404).json({ text: 'el ticket no existe' });
         });
     }
+    getData(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const ticket = yield database_1.default.query('SELECT id_ticket,producto.name, producto.valor FROM ticket INNER JOIN producto ON producto.id = ticket.producto WHERE estado = true');
+            res.json(ticket);
+        });
+    }
+    getTotal(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const total = yield database_1.default.query('SELECT SUM(producto.valor) AS Total FROM ticket INNER JOIN producto ON producto.id = ticket.producto WHERE estado = true');
+            res.json(total);
+        });
+    }
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             yield database_1.default.query('INSERT INTO ticket set ?', [req.body]);
@@ -48,6 +60,14 @@ class TicketController {
             const { id } = req.params;
             yield database_1.default.query('UPDATE ticket set ? WHERE id_ticket =?', [req.body, id]);
             res.json({ text: 'el  ticket fue actualizado ' });
+        });
+    }
+    addPedido(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            yield database_1.default.query('UPDATE ticket set id_pedido = ? WHERE estado = true', [id, req.body]);
+            yield database_1.default.query('UPDATE ticket set estado = 0 WHERE estado = 1');
+            res.json({ message: 'ticket asignado' });
         });
     }
 }

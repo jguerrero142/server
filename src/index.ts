@@ -7,6 +7,7 @@ import ticketRoutes from './routes/ticketRoutes';
 import morgan from 'morgan';
 import cors from 'cors';
 import heroesRoutes from './routes/heroesRoutes';
+import pedidoRoutes from './routes/pedidoRoutes';
 
 class Server {
 
@@ -37,7 +38,8 @@ class Server {
         this.app.use('/api/user', userRoutes);
         this.app.use('/api/producto', productRoutes); 
         this.app.use('/api/ticket', ticketRoutes);
-        this.app.use('/api/heroes', heroesRoutes);         
+        this.app.use('/api/heroes', heroesRoutes);
+        this.app.use('/api/pedido', pedidoRoutes);    
     }
     //configuramos la inicializacion del servicio por el puerto 3000
     start(): void{
