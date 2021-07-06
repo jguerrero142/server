@@ -13,6 +13,7 @@ class TicketRoutes {
     config() {
         this.router.get('/', ticketController_1.default.list);
         this.router.get('/:id', ticketController_1.default.getOne);
+        this.router.get('/ticketPedido/:id', ticketController_1.default.getTicket);
         this.router.get('/data/ticket', ticketController_1.default.getData);
         this.router.get('/data/total', ticketController_1.default.getTotal);
         this.router.post('/', ticketController_1.default.create);

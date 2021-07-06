@@ -12,6 +12,8 @@ class PedidoRoutes {
     }
     config() {
         this.router.get('/', pedidoController_1.default.list);
+        this.router.get('/user/:id', pedidoController_1.default.listOne);
+        this.router.get('/dataPedido/:id', pedidoController_1.default.listDataUser);
         this.router.get('/:id', pedidoController_1.default.getOne);
         this.router.post('/', pedidoController_1.default.create);
         this.router.put('/:id', pedidoController_1.default.update);

@@ -14,6 +14,15 @@ class UserController {
         }
         res.status(404).json({text: 'el usuario no existe'});  
         }
+    
+    public async getUser  (req: Request, res: Response): Promise<any>{ 
+            const { id } = req.params;
+            const user = await pool.query('SELECT * FROM user WHERE id_user =?',[id]);
+            if (user.length > 0){
+                return res.json(user[0]);
+            }
+            res.status(404).json({text: 'el usuario no existe'});  
+            }
 
     public async create(req: Request, res: Response): Promise<void>{
         await pool.query('INSERT INTO user set ?', [req.body]);

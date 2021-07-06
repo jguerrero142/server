@@ -6,9 +6,22 @@ class PedidoController {
     const pedido = await pool.query('SELECT * FROM pedido');
     res.json(pedido);  
     }
+
+    public async listOne(req: Request, res: Response){
+        const { id } = req.params;
+        const pedido = await pool.query('SELECT * FROM pedido WHERE id_user = ?',[id]);
+        res.json(pedido);  
+        }
+
+    public async listDataUser(req: Request, res: Response){
+            const { id } = req.params;
+            const dataUserPedido = await pool.query('SELECT (pedido.id),(pedido.created_at),(pedido.valor),(user.id_user) ,(user.nickname),(user.name),(user.picture),(user.email) FROM pedido INNER JOIN user ON user.id_user = pedido.id_user WHERE pedido.id_user = ?',[id]);
+            res.json(dataUserPedido);  
+            }
+
     public async getOne  (req: Request, res: Response): Promise<any>{ 
         const { id } = req.params;
-        const pedido = await pool.query('SELECT * FROM pedido WHERE id_user =?',[id]);
+        const pedido = await pool.query('SELECT * FROM pedido WHERE id_user = ?',[id]);
         if (pedido.length > 0){
             return res.json(pedido[0]);
         }

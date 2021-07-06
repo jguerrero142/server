@@ -14,6 +14,7 @@ class TicketRoutes {
         
         this.router.get('/', ticketController.list);
         this.router.get('/:id', ticketController.getOne);
+        this.router.get('/ticketPedido/:id', ticketController.getTicket);
         this.router.get('/data/ticket', ticketController.getData);
         this.router.get('/data/total', ticketController.getTotal);
         this.router.post('/', ticketController.create);

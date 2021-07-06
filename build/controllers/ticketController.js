@@ -30,6 +30,16 @@ class TicketController {
             res.status(404).json({ text: 'el ticket no existe' });
         });
     }
+    getTicket(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const ticket = yield database_1.default.query('SELECT id_ticket,producto.name, producto.valor FROM ticket INNER JOIN producto ON producto.id = ticket.producto WHERE id_pedido =?', [id]);
+            if (ticket.length > 0) {
+                return res.json(ticket);
+            }
+            res.status(404).json({ text: 'el pedido no tiene tickets' });
+        });
+    }
     getData(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const ticket = yield database_1.default.query('SELECT id_ticket,producto.name, producto.valor FROM ticket INNER JOIN producto ON producto.id = ticket.producto WHERE estado = true');

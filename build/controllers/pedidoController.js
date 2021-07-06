@@ -20,10 +20,24 @@ class PedidoController {
             res.json(pedido);
         });
     }
+    listOne(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const pedido = yield database_1.default.query('SELECT * FROM pedido WHERE id_user = ?', [id]);
+            res.json(pedido);
+        });
+    }
+    listDataUser(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const dataUserPedido = yield database_1.default.query('SELECT (pedido.id),(pedido.created_at),(pedido.valor),(user.id_user) ,(user.nickname),(user.name),(user.picture),(user.email) FROM pedido INNER JOIN user ON user.id_user = pedido.id_user WHERE pedido.id_user = ?', [id]);
+            res.json(dataUserPedido);
+        });
+    }
     getOne(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
-            const pedido = yield database_1.default.query('SELECT * FROM pedido WHERE id_user =?', [id]);
+            const pedido = yield database_1.default.query('SELECT * FROM pedido WHERE id_user = ?', [id]);
             if (pedido.length > 0) {
                 return res.json(pedido[0]);
             }
