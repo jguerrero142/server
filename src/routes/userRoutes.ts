@@ -13,11 +13,13 @@ class UserRoutes {
     config(): void{
         
         this.router.get('/', userController.list);
-        this.router.get('/:id', userController.getOne);
-        this.router.get('/Upedido/:id', userController.getUser);
+        this.router.get('/:id', userController.getOne);        
         this.router.post('/', userController.create);
         this.router.put('/:id', userController.update);
         this.router.delete('/:id', userController.delete);
+
+        //Routes creadas
+        this.router.get('/Upedido/:id', userController.getUser);
     }
 }
 

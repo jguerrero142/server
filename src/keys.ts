@@ -3,7 +3,7 @@ export default {
         host:'localhost',
         user: 'root',
         password: '',
-        database: 'games'
+        database: 'app_store'
     }
 
 }

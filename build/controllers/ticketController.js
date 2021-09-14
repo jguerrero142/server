@@ -40,16 +40,28 @@ class TicketController {
             res.status(404).json({ text: 'el pedido no tiene tickets' });
         });
     }
+    //Consulta todos los ticket en true 
     getData(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const ticket = yield database_1.default.query('SELECT id_ticket,producto.name, producto.valor FROM ticket INNER JOIN producto ON producto.id = ticket.producto WHERE estado = true');
+            const { id } = req.params;
+            const ticket = yield database_1.default.query('SELECT id_ticket,producto.name, producto.valor FROM ticket INNER JOIN producto ON producto.id = ticket.producto WHERE estado = true AND user_ticket = ?', [id]);
             res.json(ticket);
         });
     }
+    //Consulta el valor TOTAL de los tickets en true
     getTotal(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const total = yield database_1.default.query('SELECT SUM(producto.valor) AS Total FROM ticket INNER JOIN producto ON producto.id = ticket.producto WHERE estado = true');
+            const { id } = req.params;
+            const total = yield database_1.default.query('SELECT SUM(producto.valor) AS Total FROM ticket INNER JOIN producto ON producto.id = ticket.producto WHERE estado = true AND user_ticket = ?', [id]);
             res.json(total);
+        });
+    }
+    addPedido(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            yield database_1.default.query('UPDATE ticket set id_pedido = ? WHERE estado = true', [id, req.body]);
+            yield database_1.default.query('UPDATE ticket set estado = 0 WHERE estado = 1');
+            res.json({ message: 'ticket asignado' });
         });
     }
     create(req, res) {
@@ -70,14 +82,6 @@ class TicketController {
             const { id } = req.params;
             yield database_1.default.query('UPDATE ticket set ? WHERE id_ticket =?', [req.body, id]);
             res.json({ text: 'el  ticket fue actualizado ' });
-        });
-    }
-    addPedido(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            yield database_1.default.query('UPDATE ticket set id_pedido = ? WHERE estado = true', [id, req.body]);
-            yield database_1.default.query('UPDATE ticket set estado = 0 WHERE estado = 1');
-            res.json({ message: 'ticket asignado' });
         });
     }
 }

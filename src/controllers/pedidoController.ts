@@ -2,8 +2,16 @@ import {Request, Response} from 'express';
 import pool from '../database';
 
 class PedidoController {
+
+    //Traemos todos los ticket de un User.
+    public async listDataUser(req: Request, res: Response){
+        const { id } = req.params;
+        const dataUserPedido = await pool.query('SELECT (pedido.id),(pedido.created_at),(pedido.valor),(user.id_user) ,(user.nickname),(user.name),(user.picture),(user.email) FROM pedido INNER JOIN user ON user.id_user = pedido.id_user WHERE pedido.id_user = ?',[id]);
+        res.json(dataUserPedido);  
+        }
+
    public async list  (req: Request, res: Response){ 
-    const pedido = await pool.query('SELECT * FROM pedido');
+    const pedido = await pool.query('SELECT (pedido.id),(pedido.created_at),(pedido.valor),(user.id_user) ,(user.nickname),(user.name),(user.picture),(user.email) FROM pedido INNER JOIN user ON user.id_user = pedido.id_user');
     res.json(pedido);  
     }
 
@@ -12,13 +20,6 @@ class PedidoController {
         const pedido = await pool.query('SELECT * FROM pedido WHERE id_user = ?',[id]);
         res.json(pedido);  
         }
-
-    public async listDataUser(req: Request, res: Response){
-            const { id } = req.params;
-            const dataUserPedido = await pool.query('SELECT (pedido.id),(pedido.created_at),(pedido.valor),(user.id_user) ,(user.nickname),(user.name),(user.picture),(user.email) FROM pedido INNER JOIN user ON user.id_user = pedido.id_user WHERE pedido.id_user = ?',[id]);
-            res.json(dataUserPedido);  
-            }
-
     public async getOne  (req: Request, res: Response): Promise<any>{ 
         const { id } = req.params;
         const pedido = await pool.query('SELECT * FROM pedido WHERE id_user = ?',[id]);
@@ -37,7 +38,8 @@ class PedidoController {
         
     public async delete(req: Request, res: Response): Promise<void>{
         const { id } = req.params;
-        await pool.query('DELETE FROM pedido WHERE id_user = ?', [id]);
+        await pool.query('DELETE FROM ticket WHERE id_pedido = ?', [id]);
+        await pool.query('DELETE FROM pedido WHERE id = ?', [id]);
         res.json({message: 'the pedido was deleted'});
     }
     public async update(req: Request, res: Response): Promise<void>{

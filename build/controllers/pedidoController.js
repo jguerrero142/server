@@ -14,9 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
 class PedidoController {
+    //Traemos todos los ticket de un User.
+    listDataUser(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const dataUserPedido = yield database_1.default.query('SELECT (pedido.id),(pedido.created_at),(pedido.valor),(user.id_user) ,(user.nickname),(user.name),(user.picture),(user.email) FROM pedido INNER JOIN user ON user.id_user = pedido.id_user WHERE pedido.id_user = ?', [id]);
+            res.json(dataUserPedido);
+        });
+    }
     list(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const pedido = yield database_1.default.query('SELECT * FROM pedido');
+            const pedido = yield database_1.default.query('SELECT (pedido.id),(pedido.created_at),(pedido.valor),(user.id_user) ,(user.nickname),(user.name),(user.picture),(user.email) FROM pedido INNER JOIN user ON user.id_user = pedido.id_user');
             res.json(pedido);
         });
     }
@@ -25,13 +33,6 @@ class PedidoController {
             const { id } = req.params;
             const pedido = yield database_1.default.query('SELECT * FROM pedido WHERE id_user = ?', [id]);
             res.json(pedido);
-        });
-    }
-    listDataUser(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const dataUserPedido = yield database_1.default.query('SELECT (pedido.id),(pedido.created_at),(pedido.valor),(user.id_user) ,(user.nickname),(user.name),(user.picture),(user.email) FROM pedido INNER JOIN user ON user.id_user = pedido.id_user WHERE pedido.id_user = ?', [id]);
-            res.json(dataUserPedido);
         });
     }
     getOne(req, res) {
@@ -55,7 +56,8 @@ class PedidoController {
     delete(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
-            yield database_1.default.query('DELETE FROM pedido WHERE id_user = ?', [id]);
+            yield database_1.default.query('DELETE FROM ticket WHERE id_pedido = ?', [id]);
+            yield database_1.default.query('DELETE FROM pedido WHERE id = ?', [id]);
             res.json({ message: 'the pedido was deleted' });
         });
     }

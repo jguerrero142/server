@@ -27,15 +27,25 @@ class TicketController {
             res.status(404).json({text: 'el pedido no tiene tickets'});  
             }
 
-
-    public async getData (req: Request, res: Response){   
-        const ticket = await pool.query('SELECT id_ticket,producto.name, producto.valor FROM ticket INNER JOIN producto ON producto.id = ticket.producto WHERE estado = true');
+    //Consulta todos los ticket en true 
+    public async getData (req: Request, res: Response){
+        const { id } = req.params;   
+        const ticket = await pool.query('SELECT id_ticket,producto.name, producto.valor FROM ticket INNER JOIN producto ON producto.id = ticket.producto WHERE estado = true AND user_ticket = ?',[id]);
         res.json(ticket); 
         }
-    public async getTotal (req: Request, res: Response){   
-        const total = await pool.query('SELECT SUM(producto.valor) AS Total FROM ticket INNER JOIN producto ON producto.id = ticket.producto WHERE estado = true');
+    //Consulta el valor TOTAL de los tickets en true
+    public async getTotal (req: Request, res: Response){
+        const { id } = req.params;   
+        const total = await pool.query('SELECT SUM(producto.valor) AS Total FROM ticket INNER JOIN producto ON producto.id = ticket.producto WHERE estado = true AND user_ticket = ?',[id]);
         res.json(total); 
         }
+
+    public async addPedido (req: Request, res: Response): Promise<void>{
+            const { id } = req.params;
+            await pool.query('UPDATE ticket set id_pedido = ? WHERE estado = true',[id, req.body]);
+            await pool.query('UPDATE ticket set estado = 0 WHERE estado = 1');
+            res.json({message: 'ticket asignado'});
+            }
   
     public async create(req: Request, res: Response): Promise<void>{
         await pool.query('INSERT INTO ticket set ?', [req.body]);
@@ -52,12 +62,7 @@ class TicketController {
         res.json({text: 'el  ticket fue actualizado '});
     }
 
-    public async addPedido (req: Request, res: Response): Promise<void>{
-        const { id } = req.params;
-        await pool.query('UPDATE ticket set id_pedido = ? WHERE estado = true',[id, req.body]);
-        await pool.query('UPDATE ticket set estado = 0 WHERE estado = 1');
-        res.json({message: 'ticket asignado'});
-        }
+    
 }
 
 const ticketController = new TicketController();
