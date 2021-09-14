@@ -6,6 +6,7 @@ import { SERVER_PORT } from '../global/enviroments';
 // Socket configuracion
 import  socketIO  from 'socket.io';
 import http from 'http';
+import * as socket from '../sockets/sockets'
 
 
 //Rutas
@@ -35,7 +36,7 @@ export default class Server {
                 origin: true,
                 credentials: true
             }
-        })
+        });
 
         this.config();
         this.routes();
@@ -66,9 +67,18 @@ export default class Server {
     //Funcion para escuchar sockets
     private listenSockets(){
         console.log('escuchando conexiones - sockets');
+        
+        this.io.on('connection', (cliente) => {
+            console.log('cliente conectado', cliente.id);
+
+            socket.mensaje( cliente, this.io );
+            socket.desconectar(cliente);
+            socket.addnote(cliente);
+
+        });
     }
     //configuramos la inicializacion del servicio por el puerto 3000
-    start(): void{
+    start(){
         this.httpServer.listen(this.port, () => {
             console.log(`server in port ${SERVER_PORT}`);
         });        
